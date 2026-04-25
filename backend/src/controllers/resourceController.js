@@ -7,10 +7,11 @@ const getAll = async (req, res) => {
     const where = { approved: true };
     if (category) where.category = category;
     if (search) {
+      const term = `%${search}%`;
       where[Op.or] = [
-        { title: { [Op.iLike]: `%${search}%` } },
-        { description: { [Op.iLike]: `%${search}%` } },
-        { tags: { [Op.contains]: [search.toLowerCase()] } }
+        { title: { [Op.like]: term } },
+        { description: { [Op.like]: term } },
+        { tags: { [Op.like]: `%${search.toLowerCase()}%` } }
       ];
     }
     const offset = (parseInt(page) - 1) * parseInt(limit);

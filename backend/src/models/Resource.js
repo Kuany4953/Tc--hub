@@ -13,7 +13,17 @@ const Resource = sequelize.define('Resource', {
   schedule: { type: DataTypes.STRING },
   contact: { type: DataTypes.STRING },
   website: { type: DataTypes.STRING },
-  tags: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+  tags: {
+    type: DataTypes.TEXT,
+    defaultValue: '[]',
+    get() {
+      const raw = this.getDataValue('tags');
+      try { return raw ? JSON.parse(raw) : []; } catch { return []; }
+    },
+    set(value) {
+      this.setDataValue('tags', JSON.stringify(value || []));
+    },
+  },
   approved: { type: DataTypes.BOOLEAN, defaultValue: true },
   avgRating: { type: DataTypes.FLOAT, defaultValue: 0 },
   reviewCount: { type: DataTypes.INTEGER, defaultValue: 0 },
