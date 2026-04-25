@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { MapPinIcon, ClockIcon, StarIcon } from './Icons';
 
 const CATEGORY_LABELS = {
   tutoring: 'Tutoring', office_hours: 'Office Hours',
@@ -8,9 +9,9 @@ const CATEGORY_LABELS = {
 function Stars({ rating }) {
   const full = Math.round(rating);
   return (
-    <span className="stars">
+    <span style={{ display: 'inline-flex', gap: 1, color: 'var(--gold)' }}>
       {[1,2,3,4,5].map(i => (
-        <span key={i} style={{ opacity: i <= full ? 1 : 0.25 }}>★</span>
+        <StarIcon key={i} size={13} filled={i <= full} className="icon" style={{ opacity: i <= full ? 1 : 0.35 }} />
       ))}
     </span>
   );
@@ -18,57 +19,71 @@ function Stars({ rating }) {
 
 export default function ResourceCard({ resource }) {
   return (
-    <Link to={`/resources/${resource.id}`} style={{ display: 'block' }}>
-      <div className="card" style={{
-        height: '100%', transition: 'transform 0.15s, box-shadow 0.15s',
-        cursor: 'pointer',
-      }}
-        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+    <Link to={`/resources/${resource.id}`} style={{ display: 'block', height: '100%' }}>
+      <div className="card card-hover" style={{ height: '100%', display: 'flex', flexDirection: 'column', cursor: 'pointer' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
           <span className={`badge badge-${resource.category}`}>
             {CATEGORY_LABELS[resource.category]}
           </span>
           {resource.reviewCount > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Stars rating={resource.avgRating} />
-              <span style={{ fontSize: 12, color: 'var(--text-faint)', fontFamily: 'sans-serif' }}>
+              <span style={{ fontSize: 12, color: 'var(--text-faint)', fontWeight: 500 }}>
                 ({resource.reviewCount})
               </span>
             </div>
           )}
         </div>
 
-        <h3 style={{ fontSize: 15, fontWeight: 500, marginBottom: 6, lineHeight: 1.4 }}>
+        <h3 style={{
+          fontSize: 18,
+          fontWeight: 600,
+          marginBottom: 8,
+          lineHeight: 1.3,
+          fontFamily: 'var(--serif)',
+        }}>
           {resource.title}
         </h3>
 
-        <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 12,
-          display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+        <p style={{
+          fontSize: 14,
+          color: 'var(--text-muted)',
+          lineHeight: 1.6,
+          marginBottom: 16,
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          flex: 1,
         }}>
           {resource.description}
         </p>
 
-        {resource.location && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-faint)', fontFamily: 'sans-serif' }}>
-            <span>📍</span><span>{resource.location}</span>
-          </div>
-        )}
-
-        {resource.schedule && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-faint)', fontFamily: 'sans-serif', marginTop: 4 }}>
-            <span>🕐</span><span>{resource.schedule}</span>
-          </div>
-        )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 'auto' }}>
+          {resource.location && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+              <MapPinIcon className="icon" style={{ color: 'var(--text-faint)' }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{resource.location}</span>
+            </div>
+          )}
+          {resource.schedule && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+              <ClockIcon className="icon" style={{ color: 'var(--text-faint)' }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{resource.schedule}</span>
+            </div>
+          )}
+        </div>
 
         {resource.tags?.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 12 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
             {resource.tags.slice(0, 4).map(tag => (
               <span key={tag} style={{
-                fontSize: 11, padding: '2px 8px', borderRadius: 999,
-                background: 'var(--bg)', color: 'var(--text-muted)',
-                border: '1px solid var(--border)', fontFamily: 'sans-serif'
+                fontSize: 11,
+                padding: '3px 9px',
+                borderRadius: 999,
+                background: 'var(--bg-2)',
+                color: 'var(--text-muted)',
+                fontWeight: 500,
               }}>
                 {tag}
               </span>

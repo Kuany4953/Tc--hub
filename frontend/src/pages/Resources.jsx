@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../utils/api';
 import ResourceCard from '../components/ResourceCard';
+import { SearchIcon } from '../components/Icons';
 
 const CATEGORIES = [
   { key: '', label: 'All' },
@@ -48,23 +49,31 @@ export default function Resources() {
   };
 
   return (
-    <div className="page-container" style={{ padding: '2rem 1.5rem' }}>
+    <div className="page-container" style={{ padding: '2.5rem 1.5rem 4rem' }}>
       {/* Header */}
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 500, marginBottom: 4 }}>Campus Resources</h1>
-        <p style={{ fontSize: 14, color: 'var(--text-muted)', fontFamily: 'sans-serif' }}>
-          {total} resource{total !== 1 ? 's' : ''} available
+      <div style={{ marginBottom: 26 }}>
+        <h1 style={{ fontSize: 38, fontWeight: 700, marginBottom: 6, letterSpacing: '-0.025em' }}>Campus Resources</h1>
+        <p style={{ fontSize: 15, color: 'var(--text-muted)' }}>
+          {total} resource{total !== 1 ? 's' : ''} from across Trinity College
         </p>
       </div>
 
       {/* Search bar */}
-      <form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-        <input
-          value={searchInput}
-          onChange={e => setSearchInput(e.target.value)}
-          placeholder="Search by name, description, or tag..."
-          style={{ maxWidth: 480 }}
-        />
+      <form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, marginBottom: 22, maxWidth: 560 }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10, flex: 1,
+          background: 'var(--surface)', border: '1px solid var(--border-strong)',
+          borderRadius: 'var(--radius)', padding: '0 14px',
+          color: 'var(--text-faint)',
+        }}>
+          <SearchIcon size={17} className="icon" />
+          <input
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
+            placeholder="Search by name, description, or tag..."
+            style={{ border: 'none', boxShadow: 'none', padding: '11px 0', background: 'transparent' }}
+          />
+        </div>
         <button type="submit" className="btn-secondary">Search</button>
         {search && (
           <button type="button" className="btn-ghost" onClick={() => { setSearchInput(''); setParam('search', ''); }}>
@@ -74,12 +83,12 @@ export default function Resources() {
       </form>
 
       {/* Category tabs */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 28 }}>
         {CATEGORIES.map(cat => (
           <button key={cat.key} onClick={() => setParam('category', cat.key)}
             style={{
-              padding: '6px 16px', borderRadius: 999, fontSize: 13,
-              fontFamily: 'sans-serif', cursor: 'pointer', border: '1px solid',
+              padding: '7px 16px', borderRadius: 999, fontSize: 13.5, fontWeight: 600,
+              cursor: 'pointer', border: '1px solid',
               background: category === cat.key ? 'var(--accent)' : 'var(--surface)',
               color: category === cat.key ? 'white' : 'var(--text-muted)',
               borderColor: category === cat.key ? 'var(--accent)' : 'var(--border)',
@@ -92,30 +101,29 @@ export default function Resources() {
 
       {/* Grid */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-faint)', fontFamily: 'sans-serif' }}>
-          Loading...
-        </div>
+        <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-faint)' }}>Loading…</div>
       ) : resources.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '4rem' }}>
-          <p style={{ fontSize: 16, color: 'var(--text-muted)' }}>No resources found.</p>
-          <button className="btn-ghost" style={{ marginTop: 12 }} onClick={() => { setSearchInput(''); setSearchParams({}); }}>
+        <div className="card" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+          <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>No resources found</h3>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 14 }}>Try a different search or clear your filters.</p>
+          <button className="btn-secondary" onClick={() => { setSearchInput(''); setSearchParams({}); }}>
             Clear filters
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 18 }}>
           {resources.map(r => <ResourceCard key={r.id} resource={r} />)}
         </div>
       )}
 
       {/* Pagination */}
       {pages > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 32 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 36 }}>
           {Array.from({ length: pages }, (_, i) => i + 1).map(p => (
             <button key={p} onClick={() => setParam('page', p)}
               style={{
-                width: 36, height: 36, borderRadius: 8, fontSize: 13,
-                fontFamily: 'sans-serif', border: '1px solid',
+                width: 38, height: 38, borderRadius: 10, fontSize: 13.5, fontWeight: 600,
+                border: '1px solid',
                 background: page === p ? 'var(--accent)' : 'var(--surface)',
                 color: page === p ? 'white' : 'var(--text)',
                 borderColor: page === p ? 'var(--accent)' : 'var(--border)',
